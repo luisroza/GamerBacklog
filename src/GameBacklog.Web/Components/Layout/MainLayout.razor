@@ -1,0 +1,11 @@
+@inherits LayoutComponentBase
+@inject IAccountSessionService AccountSession
+
+<div class="page">
+    <div class="sidebar"><NavMenu /></div>
+    <main>
+        <div class="top-row px-4 app-topbar"><div><strong>Backlog command center</strong><span>@(AccountSession.IsAuthenticated ? $"Signed in as {AccountSession.CurrentUser?.Username}" : "Pick better, log faster, finish without guilt.")</span></div><a href="account">@(AccountSession.IsAuthenticated ? "Account" : "Login")</a></div>
+        <article class="content">@Body</article>
+    </main>
+</div>
+<div id="blazor-error-ui" data-nosnippet>An unhandled error has occurred.<a href="." class="reload">Reload</a><span class="dismiss">x</span></div>

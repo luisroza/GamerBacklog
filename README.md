@@ -2,47 +2,29 @@
 
 A Blazor Web App prototype for a game library and backlog command center.
 
-## What is implemented
+## Implemented
 
-- Dashboard with playing games, priority shortlist, and quick picks.
-- Library search, status/platform filters, tags, ratings, and inline status updates.
-- Backlog assistant that recommends what to play based on mood, time, and platform.
-- Stats page focused on momentum, platforms, status distribution, and completion.
-- Modular .NET structure:
-  - `GameBacklog.Domain`
-  - `GameBacklog.Application`
-  - `GameBacklog.Infrastructure`
-  - `GameBacklog.Web`
+- Dashboard, library, backlog assistant, stats, architecture, and account pages.
+- In-memory register/login/logout prototype.
+- Manual game entry with status, ownership, platform, hours, and notes.
+- Metadata provider abstraction with mock data and IGDB support.
+- Catalog search abstraction for Valve Steam and PlayStation 5 / PSN.
+- Steam owned/recently-played and PlayStation placeholder provider seams.
 
-The current data source is an in-memory seeded service so the UX can be explored immediately.
-
-## Run locally
+## Run
 
 ```powershell
 powershell -NoProfile -ExecutionPolicy Bypass -File scripts\start-dev.ps1
 ```
 
-Then open:
-
-```text
-http://localhost:5188
-```
+Open `http://localhost:5188`.
 
 ## Build
 
-This environment works best with single-node MSBuild because parallel project builds can lock intermediate files.
-
 ```powershell
-$env:DOTNET_CLI_HOME="C:\Users\rozam\OneDrive\Documentos\New project\.dotnet-home"
-$env:APPDATA="C:\Users\rozam\OneDrive\Documentos\New project\.appdata"
-$env:LOCALAPPDATA="C:\Users\rozam\OneDrive\Documentos\New project\.localappdata"
 dotnet build src\GameBacklog.Web\GameBacklog.Web.csproj --configfile NuGet.Config -p:MSBuildEnableWorkloadResolver=false -m:1
 ```
 
-## Next milestones
+## Notes
 
-- Replace the in-memory service with EF Core and PostgreSQL.
-- Add ASP.NET Core Identity for user-owned libraries.
-- Add an external metadata provider such as IGDB or RAWG.
-- Add imports, starting with CSV or Steam.
-- Add tests for filtering, status updates, and pick-next recommendation rules.
+Configure `Igdb:ClientId` and `Igdb:ClientSecret` to use IGDB. Without credentials, metadata search uses the mock provider. Steam catalog search uses Valve's public app list endpoint with fallback sample data. PlayStation 5 search uses the configured metadata provider because PSN has no stable public full-catalog API for third-party apps.

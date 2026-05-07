@@ -1,0 +1,30 @@
+@page "/account"
+@inject IAccountSessionService AccountSession
+@rendermode InteractiveServer
+
+<PageTitle>Account</PageTitle>
+
+<section class="page-heading"><div><p class="eyebrow">Account</p><h1>Create an account, login, and manage your game list.</h1></div></section>
+@if (AccountSession.IsAuthenticated)
+{
+    <section class="panel account-panel"><div><p class="eyebrow">Signed in</p><h2>@AccountSession.CurrentUser?.Username</h2><p>Your account session is active. You can add wanted, playing, completed, dropped, and wishlist games from the Library page.</p></div><button type="button" @onclick="Logout">Logout</button></section>
+}
+else
+{
+    <div class="dashboard-grid">
+        <section class="panel account-form"><p class="eyebrow">Create account</p><h2>Register</h2><label>Username<input @bind="registerUsername" autocomplete="username" /></label><label>Password<input type="password" @bind="registerPassword" autocomplete="new-password" /></label><button class="primary" type="button" @onclick="Register">Create account</button></section>
+        <section class="panel account-form"><p class="eyebrow">Welcome back</p><h2>Login</h2><label>Username<input @bind="loginUsername" autocomplete="username" /></label><label>Password<input type="password" @bind="loginPassword" autocomplete="current-password" /></label><button class="primary" type="button" @onclick="Login">Login</button></section>
+    </div>
+}
+@if (!string.IsNullOrWhiteSpace(message)) { <p class="notice">@message</p> }
+
+@code {
+    private string registerUsername = string.Empty;
+    private string registerPassword = string.Empty;
+    private string loginUsername = string.Empty;
+    private string loginPassword = string.Empty;
+    private string? message;
+    private void Register() => AccountSession.Register(registerUsername, registerPassword, out message);
+    private void Login() => AccountSession.Login(loginUsername, loginPassword, out message);
+    private void Logout() { AccountSession.Logout(); message = "Signed out."; }
+}

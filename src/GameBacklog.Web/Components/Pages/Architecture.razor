@@ -1,0 +1,7 @@
+@page "/architecture"
+
+<PageTitle>Architecture</PageTitle>
+
+<section class="page-heading"><div><p class="eyebrow">Implementation plan</p><h1>.NET modular monolith, ready for real persistence and metadata sync.</h1></div></section>
+<section class="panel prose"><h2>Current slice</h2><p>This repository contains a runnable Blazor Web App with clean project boundaries and in-memory implementations for backlog, accounts, metadata, catalog, and external library use cases.</p><ul><li><strong>Domain</strong>: game entries, statuses, ownership.</li><li><strong>Application</strong>: service contracts and DTOs.</li><li><strong>Infrastructure</strong>: in-memory services plus IGDB, Steam, and PS5 provider seams.</li><li><strong>Web</strong>: Blazor UI.</li></ul></section>
+<section class="panel prose"><h2>Next milestone</h2><ol><li>Add ASP.NET Core Identity.</li><li>Add EF Core and PostgreSQL.</li><li>Configure IGDB credentials.</li><li>Add Steam OpenID and owned-games sync.</li><li>Add tests for imports, status updates, and recommendations.</li></ol></section>

@@ -1,0 +1,8 @@
+<Solution>
+  <Folder Name="/src/">
+    <Project Path="src/GameBacklog.Application/GameBacklog.Application.csproj" />
+    <Project Path="src/GameBacklog.Domain/GameBacklog.Domain.csproj" />
+    <Project Path="src/GameBacklog.Infrastructure/GameBacklog.Infrastructure.csproj" />
+    <Project Path="src/GameBacklog.Web/GameBacklog.Web.csproj" />
+  </Folder>
+</Solution>

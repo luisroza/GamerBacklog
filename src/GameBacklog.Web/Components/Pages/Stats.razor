@@ -1,0 +1,9 @@
+@page "/stats"
+@inject IGameBacklogService BacklogService
+
+<PageTitle>Stats</PageTitle>
+@{ var stats = BacklogService.GetStats(); }
+<section class="page-heading"><div><p class="eyebrow">Stats</p><h1>Momentum and taste, not unfinished debt.</h1></div></section>
+<section class="metric-grid"><div class="metric"><span>Completed</span><strong>@stats.Completed</strong></div><div class="metric"><span>Dropped cleanly</span><strong>@stats.Dropped</strong></div><div class="metric"><span>Hours played</span><strong>@stats.PlayedHours</strong></div><div class="metric"><span>Average rating</span><strong>@stats.AverageRating</strong></div></section>
+<div class="dashboard-grid"><section class="panel"><h2>Status distribution</h2>@foreach (var pair in stats.StatusCounts.OrderByDescending(pair => pair.Value)) { <p>@Label(pair.Key): @pair.Value</p> }</section><section class="panel"><h2>Platform split</h2>@foreach (var pair in stats.PlatformCounts) { <p>@pair.Key: @pair.Value</p> }</section></div>
+@code { private static string Label(GameStatus status) => status == GameStatus.WantToPlay ? "Want to Play" : status.ToString(); }
