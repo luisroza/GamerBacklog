@@ -1,0 +1,20 @@
+@model GameCardViewModel
+@{
+    var mc = Model.Game.Metacritic;
+    var mcClass = mc >= 75 ? "bg-emerald-500" : mc >= 50 ? "bg-amber-500" : "bg-rose-500";
+}
+<a asp-controller="Games" asp-action="Details" asp-route-id="@Model.Game.Id" class="group block">
+    <div class="relative overflow-hidden rounded-xl border border-edge bg-surface">
+        <img src="@(Model.Game.ImageUrl ?? Model.Game.CoverUrl)" alt="@Model.Game.Name" class="aspect-[2/3] w-full object-cover transition-transform duration-200 group-hover:scale-[1.03]" loading="lazy" onerror="this.onerror=null;this.src='@Model.Game.CoverUrl'" />
+        @if (mc != null)
+        {
+            <span class="absolute top-2 right-2 @mcClass text-coal text-xs font-extrabold px-1.5 py-0.5 rounded-md" title="Metacritic">@mc</span>
+        }
+        @if (Model.Status != null)
+        {
+            <span class="absolute top-2 left-2 @Model.Status.Value.PillClass()">@Model.Status.Value.Label()</span>
+        }
+    </div>
+    <h3 class="mt-2 text-sm font-semibold line-clamp-2 group-hover:text-accent">@Model.Game.Name</h3>
+    <p class="text-xs text-dim">@(Model.Game.ReleaseYear != null ? Model.Game.ReleaseYear.ToString() : "—")@(string.IsNullOrWhiteSpace(Model.Game.Developer) ? "" : " · " + Model.Game.Developer)</p>
+</a>

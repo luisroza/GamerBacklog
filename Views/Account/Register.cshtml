@@ -1,0 +1,36 @@
+@model RegisterViewModel
+@{
+    ViewData["Title"] = "Create account";
+}
+
+<div class="max-w-md mx-auto card p-8">
+    <h1 class="font-display text-2xl font-bold">Create account</h1>
+    <p class="text-dim text-sm mt-1">Organize your gaming life in minutes.</p>
+
+    <form method="post" class="mt-6 space-y-4">
+        <div asp-validation-summary="All" class="text-rose-400 text-sm"></div>
+        <div>
+            <label asp-for="Username" class="label"></label>
+            <input asp-for="Username" class="input" placeholder="your_username" />
+        </div>
+        <div>
+            <label asp-for="Email" class="label"></label>
+            <input asp-for="Email" type="email" class="input" placeholder="you@email.com" />
+        </div>
+        <div>
+            <label asp-for="DisplayName" class="label"></label>
+            <input asp-for="DisplayName" class="input" placeholder="Your name (optional)" />
+        </div>
+        <div>
+            <label asp-for="Password" class="label"></label>
+            <input asp-for="Password" type="password" class="input" />
+        </div>
+        <div>
+            <label asp-for="ConfirmPassword" class="label"></label>
+            <input asp-for="ConfirmPassword" type="password" class="input" />
+        </div>
+        <button type="submit" class="btn-primary w-full justify-center">Create account</button>
+    </form>
+
+    <p class="mt-4 text-sm text-dim">Already have an account? <a asp-controller="Account" asp-action="Login" class="text-accent hover:underline">Sign in</a></p>
+</div>

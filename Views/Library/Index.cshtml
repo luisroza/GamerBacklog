@@ -1,0 +1,66 @@
+@model LibraryViewModel
+@{
+    ViewData["Title"] = "My Library";
+    var backKey = Model.Selected?.ToString() ?? "";
+}
+
+<div class="flex items-end justify-between flex-wrap gap-3">
+    <div>
+        <h1 class="font-display text-3xl font-extrabold">My Library</h1>
+        <p class="text-dim text-sm mt-1">@Model.TotalCount @(Model.TotalCount == 1 ? "game" : "games") in total</p>
+    </div>
+</div>
+
+<div class="mt-6 flex gap-1 border-b border-edge overflow-x-auto scrollbar-hide">
+    <a asp-controller="Library" asp-action="Index" class="tab @(Model.Selected == null ? "tab-active" : "")">All <span class="ml-1 text-xs">@Model.TotalCount</span></a>
+    @foreach (PlayStatus s in Enum.GetValues(typeof(PlayStatus)))
+    {
+        <a asp-controller="Library" asp-action="Index" asp-route-status="@s" class="tab @(Model.Selected == s ? "tab-active" : "")">@s.Label() <span class="ml-1 text-xs">@(Model.Counts.TryGetValue(s, out var c) ? c : 0)</span></a>
+    }
+</div>
+
+@if (Model.Items.Count == 0)
+{
+    <div class="card p-10 mt-6 text-center">
+        <p class="text-dim">Nothing here yet. Browse the <a asp-controller="Games" asp-action="Index" class="text-accent hover:underline">catalog</a> and add some games!</p>
+    </div>
+}
+else
+{
+    <div class="mt-6 grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4">
+        @foreach (var item in Model.Items)
+        {
+            <div class="group">
+                <a asp-controller="Games" asp-action="Details" asp-route-id="@item.GameId" class="block relative overflow-hidden rounded-xl border border-edge bg-surface">
+                    <img src="@(item.Game.ImageUrl ?? item.Game.CoverUrl)" alt="@item.Game.Name" class="aspect-[2/3] w-full object-cover transition-transform duration-200 group-hover:scale-[1.03]" loading="lazy" onerror="this.onerror=null;this.src='@item.Game.CoverUrl'" />
+                    <span class="absolute top-2 left-2 @item.Status.PillClass()">@item.Status.Label()</span>
+                </a>
+                <h3 class="mt-2 text-sm font-semibold line-clamp-2">@item.Game.Name</h3>
+                @if (item.Rating != null)
+                {
+                    <div class="text-xs"><span class="text-gold">@(new string('★', item.Rating.Value))</span><span class="text-edge">@(new string('★', 5 - item.Rating.Value))</span></div>
+                }
+                <div class="mt-2 flex items-center gap-2">
+                    <form method="post" asp-controller="Library" asp-action="UpdateStatus" class="flex-1 flex gap-1.5">
+                        <input type="hidden" name="id" value="@item.Id" />
+                        <input type="hidden" name="back" value="@backKey" />
+                        <select name="status" class="input !py-1.5 text-xs flex-1">
+                            @foreach (PlayStatus s2 in Enum.GetValues(typeof(PlayStatus)))
+                            {
+                                <option value="@((int)s2)" selected="@(s2 == item.Status)">@s2.Label()</option>
+                            }
+                        </select>
+                        <button type="submit" class="btn-mini">OK</button>
+                    </form>
+                    <form method="post" asp-controller="Library" asp-action="Remove">
+                        <input type="hidden" name="id" value="@item.Id" />
+                        <input type="hidden" name="back" value="@backKey" />
+                        <button type="submit" title="Remove from library" class="text-dim hover:text-rose-400 p-1.5">
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 6h18M8 6V4h8v2m1 0v14a2 2 0 0 1-2 2H9a2 2 0 0 1-2-2V6"/></svg>
+                        </button>
+                    </form>
+                </div>
+            </div>
+        }
+    </div>
+}

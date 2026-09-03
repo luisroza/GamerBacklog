@@ -1,0 +1,201 @@
+/* ===== GamerBacklog design system ===== */
+/* Tema: fundo #0F1115, superfície #1A1D23, elevada #23272F, borda #2E333D,
+   texto #E5E7EB, secundário #9CA3AF, accent teal #2DD4BF (hover #14B8A6).
+   Estes estilos garantem a identidade visual mesmo se o Tailwind Play CDN falhar. */
+
+:root {
+    --bg: #0F1115;
+    --surface: #1A1D23;
+    --elevated: #23272F;
+    --edge: #2E333D;
+    --ink: #E5E7EB;
+    --dim: #9CA3AF;
+    --accent: #2DD4BF;
+    --accent-hover: #14B8A6;
+    --gold: #FBBF24;
+}
+
+html { color-scheme: dark; }
+
+body {
+    background: var(--bg);
+    color: var(--ink);
+    font-family: 'Inter', system-ui, -apple-system, sans-serif;
+}
+
+h1, h2, h3, h4, .font-display {
+    font-family: 'Outfit', 'Inter', sans-serif;
+}
+
+a { text-decoration: none; }
+
+/* Navbar */
+.navlink {
+    padding: .5rem .75rem;
+    border-radius: .75rem;
+    color: var(--dim);
+    font-weight: 500;
+}
+.navlink:hover { color: var(--ink); background: var(--surface); }
+
+/* Botões */
+.btn-primary {
+    display: inline-flex;
+    align-items: center;
+    gap: .5rem;
+    background: var(--accent);
+    color: #0F1115;
+    font-weight: 600;
+    padding: .6rem 1.1rem;
+    border-radius: .75rem;
+    border: 1px solid var(--accent);
+    transition: background .15s ease, border-color .15s ease;
+}
+.btn-primary:hover { background: var(--accent-hover); border-color: var(--accent-hover); color: #0F1115; }
+
+.btn-outline {
+    display: inline-flex;
+    align-items: center;
+    gap: .5rem;
+    background: transparent;
+    color: var(--ink);
+    font-weight: 600;
+    padding: .6rem 1.1rem;
+    border-radius: .75rem;
+    border: 1px solid var(--edge);
+    transition: all .15s ease;
+}
+.btn-outline:hover { background: var(--surface); border-color: var(--accent); color: var(--accent); }
+
+.btn-mini {
+    background: var(--elevated);
+    border: 1px solid var(--edge);
+    color: var(--ink);
+    font-weight: 600;
+    font-size: .72rem;
+    padding: .35rem .6rem;
+    border-radius: .6rem;
+}
+.btn-mini:hover { border-color: var(--accent); color: var(--accent); }
+
+.btn-status {
+    padding: .5rem .85rem;
+    border-radius: .75rem;
+    border: 1px solid var(--edge);
+    color: var(--dim);
+    font-weight: 600;
+    font-size: .85rem;
+    transition: all .15s ease;
+}
+.btn-status:hover { border-color: var(--accent); color: var(--accent); }
+
+button:focus-visible, a:focus-visible, input:focus-visible, select:focus-visible, textarea:focus-visible, summary:focus-visible {
+    outline: 2px solid var(--accent);
+    outline-offset: 2px;
+}
+
+/* Cards */
+.card {
+    background: var(--surface);
+    border: 1px solid var(--edge);
+    border-radius: .9rem;
+}
+
+/* Menu de dropdown */
+.menu-item {
+    display: block;
+    width: 100%;
+    text-align: left;
+    padding: .5rem .75rem;
+    border-radius: .6rem;
+    font-size: .875rem;
+    color: var(--dim);
+}
+.menu-item:hover { background: var(--elevated); color: var(--ink); }
+
+/* Tabs underline teal */
+.tab {
+    padding: .7rem .95rem;
+    color: var(--dim);
+    font-weight: 600;
+    font-size: .9rem;
+    border-bottom: 2px solid transparent;
+    white-space: nowrap;
+}
+.tab:hover { color: var(--ink); }
+.tab-active { color: var(--accent); border-bottom-color: var(--accent); }
+
+/* Formulários */
+.label {
+    display: block;
+    font-size: .8rem;
+    font-weight: 600;
+    color: var(--dim);
+    margin-bottom: .35rem;
+}
+.input {
+    width: 100%;
+    background: var(--surface);
+    border: 1px solid var(--edge);
+    border-radius: .75rem;
+    padding: .6rem .9rem;
+    color: var(--ink);
+    font-size: .9rem;
+}
+.input:focus {
+    outline: none;
+    border-color: var(--accent);
+    box-shadow: 0 0 0 2px rgba(45, 212, 191, .35);
+}
+select.input option { background: var(--surface); }
+
+/* Pills de status (fundo 10% opacidade) */
+.pill {
+    display: inline-flex;
+    align-items: center;
+    gap: .3rem;
+    padding: .22rem .6rem;
+    border-radius: 9999px;
+    font-size: .7rem;
+    font-weight: 700;
+    letter-spacing: .02em;
+}
+.pill-backlog   { background: rgba(139, 92, 246, .12); color: #8B5CF6; border: 1px solid rgba(139, 92, 246, .35); }
+.pill-playing   { background: rgba(56, 189, 248, .12); color: #38BDF8; border: 1px solid rgba(56, 189, 248, .35); }
+.pill-played    { background: rgba(52, 211, 153, .12); color: #34D399; border: 1px solid rgba(52, 211, 153, .35); }
+.pill-abandoned { background: rgba(248, 113, 113, .12); color: #F87171; border: 1px solid rgba(248, 113, 113, .35); }
+.pill-wishlist  { background: rgba(251, 191, 36, .12); color: #FBBF24; border: 1px solid rgba(251, 191, 36, .35); }
+
+/* Estrelas (rating âmbar #FBBF24) */
+.text-gold { color: var(--gold); }
+.text-edge { color: var(--edge); }
+.star-btn { color: var(--edge); transition: color .1s ease; }
+.star-btn.star-on { color: var(--gold); }
+
+/* Barra de raridade de conquistas */
+.rating-bar {
+    background: var(--edge);
+    border-radius: 9999px;
+    height: 6px;
+    overflow: hidden;
+}
+.rating-bar > div { background: var(--gold); height: 100%; border-radius: 9999px; }
+
+/* Banner de perfil */
+.banner {
+    background: linear-gradient(120deg, #134E4A 0%, #155E75 45%, #1A1D23 100%);
+}
+
+/* Utilitários */
+.line-clamp-2 {
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+}
+.scrollbar-hide::-webkit-scrollbar { display: none; }
+.scrollbar-hide { -ms-overflow-style: none; scrollbar-width: none; }
+
+/* Dropdowns via <details> sem marcador */
+details > summary { list-style: none; cursor: pointer; }
+details > summary::-webkit-details-marker { display: none; }

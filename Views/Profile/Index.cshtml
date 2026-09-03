@@ -1,0 +1,83 @@
+@model ProfileViewModel
+@{
+    ViewData["Title"] = Model.Profile.DisplayName + " · Profile";
+    var avatarUrl = Model.Profile.AvatarUrl ?? "/avatar/" + Uri.EscapeDataString(Model.Profile.UserName ?? "user");
+}
+
+<div class="rounded-3xl border border-edge overflow-hidden">
+    <div class="banner h-32 md:h-44"></div>
+    <div class="bg-surface px-6 pb-6">
+        <div class="flex flex-col md:flex-row md:items-end gap-4 -mt-10">
+            <img src="@avatarUrl" alt="@Model.Profile.UserName" class="w-20 h-20 md:w-24 md:h-24 rounded-2xl border-4 border-surface" />
+            <div class="flex-1 min-w-0">
+                <h1 class="font-display text-2xl md:text-3xl font-extrabold">@Model.Profile.DisplayName</h1>
+                <p class="text-dim text-sm">@@@Model.Profile.UserName</p>
+                @if (!string.IsNullOrWhiteSpace(Model.Profile.Bio))
+                {
+                    <p class="mt-2 text-sm text-ink max-w-2xl">@Model.Profile.Bio</p>
+                }
+            </div>
+            @if (User.Identity?.IsAuthenticated == true && !Model.IsSelf)
+            {
+                <form method="post" asp-controller="Profile" asp-action="Follow" asp-route-username="@Model.Profile.UserName">
+                    <input type="hidden" name="returnUrl" value="@Context.Request.Path" />
+                    <button type="submit" class="@(Model.IsFollowing ? "btn-outline" : "btn-primary")">@(Model.IsFollowing ? "Unfollow" : "Follow")</button>
+                </form>
+            }
+        </div>
+
+        <div class="mt-6 grid grid-cols-3 sm:grid-cols-4 lg:grid-cols-7 gap-3">
+            <div class="card p-4 text-center">
+                <div class="font-display text-2xl font-extrabold text-sky-400">@(Model.Counts.TryGetValue(PlayStatus.Playing, out var cPlaying) ? cPlaying : 0)</div>
+                <div class="text-xs text-dim mt-1">Playing</div>
+            </div>
+            <div class="card p-4 text-center">
+                <div class="font-display text-2xl font-extrabold text-emerald-400">@(Model.Counts.TryGetValue(PlayStatus.Played, out var cPlayed) ? cPlayed : 0)</div>
+                <div class="text-xs text-dim mt-1">Played</div>
+            </div>
+            <div class="card p-4 text-center">
+                <div class="font-display text-2xl font-extrabold text-violet-400">@(Model.Counts.TryGetValue(PlayStatus.Backlog, out var cBacklog) ? cBacklog : 0)</div>
+                <div class="text-xs text-dim mt-1">Want to Play</div>
+            </div>
+            <div class="card p-4 text-center">
+                <div class="font-display text-2xl font-extrabold text-rose-400">@(Model.Counts.TryGetValue(PlayStatus.Abandoned, out var cAbandoned) ? cAbandoned : 0)</div>
+                <div class="text-xs text-dim mt-1">Abandoned</div>
+            </div>
+            <div class="card p-4 text-center">
+                <div class="font-display text-2xl font-extrabold text-accent">@Model.ReviewCount</div>
+                <div class="text-xs text-dim mt-1">Reviews</div>
+            </div>
+            <div class="card p-4 text-center">
+                <div class="font-display text-2xl font-extrabold text-ink">@Model.Followers</div>
+                <div class="text-xs text-dim mt-1">Followers</div>
+            </div>
+            <div class="card p-4 text-center">
+                <div class="font-display text-2xl font-extrabold text-ink">@Model.Following</div>
+                <div class="text-xs text-dim mt-1">Following</div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@if (Model.TotalGames == 0)
+{
+    <div class="card p-10 mt-6 text-center text-dim">This user hasn't added any games to their library yet.</div>
+}
+
+@{
+    var order = new[] { PlayStatus.Playing, PlayStatus.Played, PlayStatus.Backlog, PlayStatus.Abandoned, PlayStatus.Wishlist };
+}
+
+@foreach (var s in order.Where(x => Model.Shelves.ContainsKey(x) && Model.Shelves[x].Count > 0))
+{
+    <h2 class="mt-10 font-display text-xl font-bold flex items-center gap-3">
+        <span class="@s.PillClass()">@s.Label()</span>
+        <span class="text-dim text-sm font-normal">@Model.Shelves[s].Count</span>
+    </h2>
+    <div class="mt-4 grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4">
+        @foreach (var ug in Model.Shelves[s])
+        {
+            <partial name="_GameCard" model="new GameCardViewModel { Game = ug.Game, Status = ug.Status }" />
+        }
+    </div>
+}

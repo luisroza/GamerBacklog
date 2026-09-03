@@ -1,0 +1,29 @@
+@model NotificationsViewModel
+@{
+    ViewData["Title"] = "Notifications";
+}
+
+<div class="flex items-end justify-between flex-wrap gap-3">
+    <div>
+        <h1 class="font-display text-3xl font-extrabold">Notifications</h1>
+        <p class="text-dim text-sm mt-1">The latest from your network.</p>
+    </div>
+    <form method="post" asp-controller="Notifications" asp-action="MarkAllRead">
+        <button type="submit" class="btn-outline">Mark all as read</button>
+    </form>
+</div>
+
+<div class="mt-6 card divide-y divide-edge">
+    @if (Model.Items.Count == 0)
+    {
+        <div class="p-6 text-dim text-sm">No notifications yet.</div>
+    }
+    @foreach (var n in Model.Items)
+    {
+        <a href="@n.Link" class="flex items-center gap-3 p-4 hover:bg-surface/60">
+            <span class="w-2 h-2 rounded-full @(n.IsRead ? "bg-edge" : "bg-accent") shrink-0"></span>
+            <span class="text-sm flex-1">@n.Text</span>
+            <span class="text-xs text-dim shrink-0">@Ui.TimeAgo(n.CreatedAt)</span>
+        </a>
+    }
+</div>

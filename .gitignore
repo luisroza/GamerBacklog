@@ -1,0 +1,19 @@
+# Build artifacts
+bin/
+obj/
+
+# Local database (recreated + seeded automatically on boot)
+*.db
+*.db-shm
+*.db-wal
+
+# IDE / user files
+.vs/
+.idea/
+.vscode/
+*.user
+*.suo
+
+# OS
+Thumbs.db
+.DS_Store

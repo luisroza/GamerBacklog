@@ -1,0 +1,76 @@
+@model GamesIndexViewModel
+@{
+    ViewData["Title"] = "Game Catalog";
+}
+
+<div class="flex flex-col gap-4">
+    <div>
+        <h1 class="font-display text-3xl font-extrabold">Catalog</h1>
+        <p class="text-dim text-sm mt-1">@Model.TotalCount @(Model.TotalCount == 1 ? "game" : "games") found</p>
+    </div>
+
+    <form method="get" class="card p-4 grid gap-3 md:grid-cols-[1fr_auto_auto_auto] items-end">
+        <div>
+            <label class="label">Search</label>
+            <input type="search" name="q" value="@Model.Q" placeholder="Game name..." class="input" />
+        </div>
+        <div>
+            <label class="label">Genre</label>
+            <select name="genre" class="input">
+                <option value="">All</option>
+                @foreach (var g in Model.Genres)
+                {
+                    <option value="@g" selected="@(g == Model.Genre)">@g</option>
+                }
+            </select>
+        </div>
+        <div>
+            <label class="label">Platform</label>
+            <select name="platform" class="input">
+                <option value="">All</option>
+                @foreach (var p in Model.Platforms)
+                {
+                    <option value="@p" selected="@(p == Model.Platform)">@p</option>
+                }
+            </select>
+        </div>
+        <div class="flex gap-2">
+            <button type="submit" class="btn-primary">Filter</button>
+            <a asp-controller="Games" asp-action="Index" class="btn-outline">Clear</a>
+        </div>
+    </form>
+
+    @if (Model.Games.Count == 0)
+    {
+        <div class="card p-10 text-center text-dim">No games found with these filters.</div>
+    }
+    else
+    {
+        <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4">
+            @foreach (var g in Model.Games)
+            {
+                PlayStatus? st = null;
+                if (Model.UserStatuses.TryGetValue(g.Id, out var s2))
+                {
+                    st = s2;
+                }
+                <partial name="_GameCard" model="new GameCardViewModel { Game = g, Status = st }" />
+            }
+        </div>
+
+        @if (Model.TotalPages > 1)
+        {
+            <div class="flex items-center justify-center gap-3 mt-4">
+                @if (Model.Page > 1)
+                {
+                    <a asp-controller="Games" asp-action="Index" asp-route-q="@Model.Q" asp-route-genre="@Model.Genre" asp-route-platform="@Model.Platform" asp-route-page="@(Model.Page - 1)" class="btn-outline">Previous</a>
+                }
+                <span class="text-sm text-dim">Page @Model.Page of @Model.TotalPages</span>
+                @if (Model.Page < Model.TotalPages)
+                {
+                    <a asp-controller="Games" asp-action="Index" asp-route-q="@Model.Q" asp-route-genre="@Model.Genre" asp-route-platform="@Model.Platform" asp-route-page="@(Model.Page + 1)" class="btn-outline">Next</a>
+                }
+            </div>
+        }
+    }
+</div>

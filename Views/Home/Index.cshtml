@@ -1,0 +1,82 @@
+@model HomeIndexViewModel
+@{
+    ViewData["Title"] = Model.IsLoggedIn ? "Home" : "GamerBacklog";
+}
+
+@if (!Model.IsLoggedIn)
+{
+    <section class="relative overflow-hidden rounded-3xl border border-edge bg-surface px-6 py-16 md:py-24 text-center">
+        <div class="absolute -top-24 -right-24 w-72 h-72 rounded-full bg-accent/10 blur-3xl"></div>
+        <div class="absolute -bottom-24 -left-24 w-72 h-72 rounded-full bg-violet-500/10 blur-3xl"></div>
+        <h1 class="font-display text-4xl md:text-5xl font-extrabold max-w-3xl mx-auto">Your game <span class="text-accent">backlog</span>, finally under control</h1>
+        <p class="mt-4 text-dim max-w-2xl mx-auto">Track what you're playing, rate games, write reviews, follow achievements and see what your friends are playing.</p>
+        <div class="mt-8 flex flex-wrap gap-3 justify-center">
+            <a asp-controller="Account" asp-action="Register" class="btn-primary">Create free account</a>
+            <a asp-controller="Account" asp-action="Login" class="btn-outline">I already have an account</a>
+        </div>
+    </section>
+}
+
+@if (Model.IsLoggedIn && Model.ContinuePlaying.Count > 0)
+{
+    <section class="mt-2">
+        <h2 class="font-display text-2xl font-bold">Continue Playing</h2>
+        <div class="mt-4 flex gap-4 overflow-x-auto pb-2 scrollbar-hide">
+            @foreach (var ug in Model.ContinuePlaying)
+            {
+                <a asp-controller="Games" asp-action="Details" asp-route-id="@ug.GameId" class="group w-36 shrink-0">
+                    <div class="relative overflow-hidden rounded-xl border border-edge bg-surface">
+                        <img src="@(ug.Game.ImageUrl ?? ug.Game.CoverUrl)" alt="@ug.Game.Name" class="aspect-[2/3] w-full object-cover transition-transform duration-200 group-hover:scale-[1.03]" loading="lazy" onerror="this.onerror=null;this.src='@ug.Game.CoverUrl'" />
+                        <span class="absolute top-2 left-2 pill pill-playing">Playing</span>
+                    </div>
+                    <h3 class="mt-2 text-sm font-semibold line-clamp-2 group-hover:text-accent">@ug.Game.Name</h3>
+                    <p class="text-xs text-dim">@(ug.HoursPlayed != null ? ug.HoursPlayed + " h played" : "in progress")</p>
+                </a>
+            }
+        </div>
+    </section>
+}
+
+<div class="@(Model.IsLoggedIn ? "mt-10 grid gap-8 lg:grid-cols-3" : "mt-10")">
+    <section class="@(Model.IsLoggedIn ? "lg:col-span-2" : "")">
+        <div class="flex items-end justify-between">
+            <h2 class="font-display text-2xl font-bold">Trending</h2>
+            <a asp-controller="Games" asp-action="Index" class="text-sm text-accent hover:underline">view catalog</a>
+        </div>
+        <div class="mt-4 grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4">
+            @foreach (var g in Model.Trending)
+            {
+                <partial name="_GameCard" model="new GameCardViewModel { Game = g, Status = null }" />
+            }
+        </div>
+    </section>
+
+    @if (Model.IsLoggedIn)
+    {
+        <aside>
+            <h2 class="font-display text-2xl font-bold">Activity</h2>
+            <div class="mt-4 card divide-y divide-edge">
+                @if (Model.Feed.Count == 0)
+                {
+                    <div class="p-4 text-sm text-dim">Follow people from their profiles to see activity here.</div>
+                }
+                @foreach (var a in Model.Feed)
+                {
+                    <div class="flex gap-3 p-4">
+                        <img src="/avatar/@Uri.EscapeDataString(a.User.UserName ?? "user")" alt="" class="w-9 h-9 rounded-full border border-edge shrink-0" />
+                        <div class="min-w-0">
+                            <p class="text-sm leading-snug">@a.Text</p>
+                            <div class="mt-1 flex items-center gap-2 flex-wrap">
+                                <span class="text-xs text-dim">@Ui.TimeAgo(a.CreatedAt)</span>
+                                @if (a.Game != null && a.GameId != null)
+                                {
+                                    <a asp-controller="Games" asp-action="Details" asp-route-id="@a.GameId" class="text-xs text-accent hover:underline">@a.Game.Name</a>
+                                }
+                            </div>
+                        </div>
+                    </div>
+                }
+            </div>
+        </aside>
+    }
+</div>

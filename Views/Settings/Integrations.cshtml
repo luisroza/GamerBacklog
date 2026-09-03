@@ -1,0 +1,86 @@
+@model IntegrationsViewModel
+@{
+    ViewData["Title"] = "Integrations";
+    var connected = !string.IsNullOrWhiteSpace(Model.SteamId);
+}
+
+<div>
+    <h1 class="font-display text-3xl font-extrabold">Integrations</h1>
+    <p class="text-dim text-sm mt-1">Connect your accounts to sync achievements and playtime.</p>
+</div>
+
+<div class="mt-6 grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+    <div class="card p-6 flex flex-col">
+        <div class="flex items-center justify-between gap-2">
+            <h2 class="font-display text-lg font-bold">RAWG · Catalog</h2>
+            @if (Model.RawgConfigured)
+            {
+                <span class="pill pill-played">API configured</span>
+            }
+            else
+            {
+                <span class="pill pill-wishlist">Not configured</span>
+            }
+        </div>
+        <p class="mt-2 text-sm text-dim">Powers the game catalog with official Metacritic scores via the free RAWG API. Games are imported <span class="text-ink">on demand</span>: when someone searches for a game that isn't in our database yet, it is fetched from RAWG once and stored locally — no API call is ever repeated for the same game. Set "Rawg:ApiKey" in appsettings.json (free key at <a href="https://rawg.io/apidocs" target="_blank" class="text-accent hover:underline">rawg.io/apidocs</a>).</p>
+    </div>
+
+    <div class="card p-6 flex flex-col">
+        <div class="flex items-center justify-between gap-2">
+            <h2 class="font-display text-lg font-bold">Steam</h2>
+            @if (Model.SteamConfigured)
+            {
+                <span class="pill pill-played">API configured</span>
+            }
+            else
+            {
+                <span class="pill pill-wishlist">Simulated mode</span>
+            }
+        </div>
+        <p class="mt-2 text-sm text-dim">Sync your Steam achievements. Without an API key configured, syncing is simulated (30–90% unlock).</p>
+
+        @if (connected)
+        {
+            <p class="mt-3 text-sm">Connected as <span class="text-ink font-semibold">@Model.SteamId</span></p>
+        }
+        else
+        {
+            <p class="mt-3 text-sm text-dim">Not connected.</p>
+        }
+
+        <form method="post" asp-controller="Settings" asp-action="SaveSteam" class="mt-4 space-y-3">
+            <div>
+                <label class="label">SteamID (64-bit)</label>
+                <input name="steamId" value="@Model.SteamId" class="input" placeholder="76561198000000000" />
+            </div>
+            <button type="submit" class="btn-outline">Save SteamID</button>
+        </form>
+
+        <form method="post" asp-controller="Settings" asp-action="SyncSteam" class="mt-3">
+            <button type="submit" class="btn-primary">Sync now</button>
+        </form>
+
+        @if (Model.LastSync != null)
+        {
+            <p class="mt-3 text-xs text-dim">Last sync: @Model.LastSync?.ToLocalTime().ToString("MM/dd/yyyy HH:mm")</p>
+        }
+    </div>
+
+    <div class="card p-6 flex flex-col opacity-70">
+        <div class="flex items-center justify-between gap-2">
+            <h2 class="font-display text-lg font-bold">PSN</h2>
+            <span class="pill pill-backlog">Coming soon</span>
+        </div>
+        <p class="mt-2 text-sm text-dim">Import your PlayStation Network trophies. This integration is not available yet.</p>
+        <button type="button" disabled class="btn-outline mt-auto w-fit cursor-not-allowed opacity-50">Sync now</button>
+    </div>
+
+    <div class="card p-6 flex flex-col opacity-70">
+        <div class="flex items-center justify-between gap-2">
+            <h2 class="font-display text-lg font-bold">Xbox</h2>
+            <span class="pill pill-backlog">Coming soon</span>
+        </div>
+        <p class="mt-2 text-sm text-dim">Import your Xbox Live achievements. This integration is not available yet.</p>
+        <button type="button" disabled class="btn-outline mt-auto w-fit cursor-not-allowed opacity-50">Sync now</button>
+    </div>
+</div>
