@@ -1,0 +1,122 @@
+@model AdminDashboardViewModel
+@{
+    ViewData["Title"] = "Admin — Games";
+    string Source(AdminGameRow g) => g.RawgId != null ? "RAWG" : g.SteamAppId != null ? "Steam" : "Demo";
+    string SourceClass(AdminGameRow g) => g.RawgId != null
+        ? "text-[#2DD4BF] bg-[#2DD4BF]/10 border-[#2DD4BF]/30"
+        : g.SteamAppId != null
+            ? "text-[#38BDF8] bg-[#38BDF8]/10 border-[#38BDF8]/30"
+            : "text-[#9CA3AF] bg-[#9CA3AF]/10 border-[#9CA3AF]/30";
+    string McClass(int? mc) => mc >= 80 ? "text-[#34D399]" : mc >= 50 ? "text-[#FBBF24]" : "text-[#F87171]";
+    var from = Model.TotalCount == 0 ? 0 : (Model.Page - 1) * 25 + 1;
+    var to = Math.Min(Model.Page * 25, Model.TotalCount);
+}
+
+<div class="flex items-end justify-between flex-wrap gap-3">
+    <div>
+        <h1 class="font-display text-3xl font-extrabold">Admin — Games</h1>
+        <p class="text-dim text-sm mt-1">Manage the games available in the catalog.</p>
+    </div>
+    <a asp-action="Create" class="btn-primary">New game</a>
+</div>
+
+<div class="mt-6 grid grid-cols-2 md:grid-cols-4 gap-3">
+    <div class="card p-4">
+        <div class="font-display text-2xl font-extrabold text-[#2DD4BF]">@Model.TotalGames</div>
+        <div class="text-xs uppercase tracking-wide text-dim mt-1">Games in catalog</div>
+    </div>
+    <div class="card p-4">
+        <div class="font-display text-lg font-extrabold">
+            <span class="text-[#2DD4BF]">@Model.RawgGames</span>
+            <span class="text-dim">/</span>
+            <span class="text-[#38BDF8]">@Model.SteamGames</span>
+            <span class="text-dim">/</span>
+            <span class="text-[#9CA3AF]">@Model.DemoGames</span>
+        </div>
+        <div class="text-xs uppercase tracking-wide text-dim mt-1">Sources — RAWG/Steam/Demo</div>
+    </div>
+    <div class="card p-4">
+        <div class="font-display text-2xl font-extrabold text-[#34D399]">@Model.GamesWithMetacritic80Plus</div>
+        <div class="text-xs uppercase tracking-wide text-dim mt-1">Metacritic 80+</div>
+    </div>
+    <div class="card p-4">
+        <div class="font-display text-2xl font-extrabold">@Model.LibraryEntries</div>
+        <div class="text-xs uppercase tracking-wide text-dim mt-1">Library entries · @Model.TotalUsers users · @Model.TotalReviews reviews</div>
+    </div>
+</div>
+
+<form method="get" class="mt-6 flex gap-2 max-w-md">
+    <input type="search" name="search" value="@Model.Search" placeholder="Search by name or developer..." class="input flex-1" />
+    <button type="submit" class="btn-outline">Search</button>
+</form>
+
+<div class="mt-4 card overflow-hidden">
+    <div class="overflow-x-auto">
+        <table class="w-full text-sm">
+            <thead>
+                <tr class="text-xs uppercase text-dim border-b border-edge text-left">
+                    <th class="py-2 px-3 font-semibold">Name</th>
+                    <th class="py-2 px-3 font-semibold">Year</th>
+                    <th class="py-2 px-3 font-semibold">Developer</th>
+                    <th class="py-2 px-3 font-semibold">Metacritic</th>
+                    <th class="py-2 px-3 font-semibold">Source</th>
+                    <th class="py-2 px-3 font-semibold">In libraries</th>
+                    <th class="py-2 px-3 font-semibold text-right">Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                @if (Model.Games.Count == 0)
+                {
+                    <tr>
+                        <td colspan="7" class="py-8 text-center text-dim">
+                            @(string.IsNullOrWhiteSpace(Model.Search) ? "No games in the catalog yet." : $"No games found for \"{Model.Search}\".")
+                        </td>
+                    </tr>
+                }
+                @foreach (var g in Model.Games)
+                {
+                    <tr class="border-b border-edge/60 hover:bg-surface/60">
+                        <td class="py-2 px-3">
+                            <div class="flex items-center gap-2 min-w-0">
+                                <img src="@(g.ImageUrl ?? g.CoverUrl)" alt="" class="w-8 h-12 object-cover rounded border border-edge shrink-0" onerror="this.onerror=null;this.src='@g.CoverUrl'" />
+                                <a asp-controller="Games" asp-action="Details" asp-route-id="@g.Id" class="text-ink font-medium hover:text-accent truncate max-w-[220px]">@g.Name</a>
+                            </div>
+                        </td>
+                        <td class="py-2 px-3 text-dim">@(g.ReleaseYear?.ToString() ?? "—")</td>
+                        <td class="py-2 px-3 text-dim truncate max-w-[160px]">@(string.IsNullOrWhiteSpace(g.Developer) ? "—" : g.Developer)</td>
+                        <td class="py-2 px-3 font-semibold @(g.Metacritic != null ? McClass(g.Metacritic) : "text-dim")">@(g.Metacritic?.ToString() ?? "—")</td>
+                        <td class="py-2 px-3"><span class="pill border @SourceClass(g)">@Source(g)</span></td>
+                        <td class="py-2 px-3">@g.LibraryCount</td>
+                        <td class="py-2 px-3">
+                            <div class="flex gap-1.5 justify-end">
+                                <a asp-action="Edit" asp-route-id="@g.Id" class="btn-mini">Edit</a>
+                                <a asp-action="Delete" asp-route-id="@g.Id" class="btn-mini text-[#F87171] border border-[#F87171]/40 hover:bg-[#F87171]/10">Delete</a>
+                            </div>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+    <div class="flex items-center justify-between px-3 py-2 border-t border-edge text-sm text-dim">
+        <span>Showing @from–@to of @Model.TotalCount</span>
+        <div class="flex gap-2">
+            @if (Model.Page > 1)
+            {
+                <a asp-action="Index" asp-route-search="@Model.Search" asp-route-page="@(Model.Page - 1)" class="btn-mini">Prev</a>
+            }
+            else
+            {
+                <span class="btn-mini opacity-40 cursor-not-allowed">Prev</span>
+            }
+            @if (Model.Page < Model.TotalPages)
+            {
+                <a asp-action="Index" asp-route-search="@Model.Search" asp-route-page="@(Model.Page + 1)" class="btn-mini">Next</a>
+            }
+            else
+            {
+                <span class="btn-mini opacity-40 cursor-not-allowed">Next</span>
+            }
+        </div>
+    </div>
+</div>

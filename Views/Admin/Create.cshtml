@@ -1,0 +1,54 @@
+@model AdminGameFormViewModel
+@{
+    ViewData["Title"] = "Admin — New game";
+}
+
+<div class="max-w-4xl mx-auto">
+    <h1 class="font-display text-2xl font-extrabold">New game</h1>
+    <p class="text-dim text-sm mt-1">Add a game directly to the catalog.</p>
+
+    <form method="post" class="card p-6 mt-4 grid grid-cols-1 md:grid-cols-2 gap-5" asp-action="Create">
+        <div asp-validation-summary="ModelOnly" class="text-[#F87171] text-sm md:col-span-2"></div>
+
+        <div>
+            <label asp-for="Name" class="label"></label>
+            <input asp-for="Name" class="input w-full" />
+            <span asp-validation-for="Name" class="text-xs text-[#F87171] mt-1 block"></span>
+        </div>
+        <div>
+            <label asp-for="Developer" class="label"></label>
+            <input asp-for="Developer" class="input w-full" />
+        </div>
+        <div>
+            <label asp-for="ReleaseYear" class="label"></label>
+            <input asp-for="ReleaseYear" type="number" class="input w-full" />
+            <span asp-validation-for="ReleaseYear" class="text-xs text-[#F87171] mt-1 block"></span>
+        </div>
+        <div>
+            <label asp-for="Metacritic" class="label"></label>
+            <input asp-for="Metacritic" type="number" min="0" max="100" class="input w-full" />
+            <span asp-validation-for="Metacritic" class="text-xs text-[#F87171] mt-1 block"></span>
+        </div>
+        <div>
+            <label asp-for="Genres" class="label"></label>
+            <input asp-for="Genres" class="input w-full" placeholder="RPG,Action,Adventure" />
+        </div>
+        <div>
+            <label asp-for="Platforms" class="label"></label>
+            <input asp-for="Platforms" class="input w-full" placeholder="PC,PS5,Switch" />
+        </div>
+        <div class="md:col-span-2">
+            <label asp-for="ImageUrl" class="label"></label>
+            <input asp-for="ImageUrl" type="url" class="input w-full" placeholder="https://..." />
+            <span asp-validation-for="ImageUrl" class="text-xs text-[#F87171] mt-1 block"></span>
+        </div>
+        <div class="md:col-span-2">
+            <label asp-for="Summary" class="label"></label>
+            <textarea asp-for="Summary" rows="5" class="input w-full"></textarea>
+        </div>
+        <div class="md:col-span-2 flex gap-2 justify-end">
+            <a asp-action="Index" class="btn-outline">Cancel</a>
+            <button type="submit" class="btn-primary">Save</button>
+        </div>
+    </form>
+</div>

@@ -37,7 +37,7 @@ The SQLite database is created, migrated and seeded automatically on first boot.
 ```
 
 - **RAWG key** (free, ~20k requests/month): register at <https://rawg.io/apidocs>. Games are imported **on demand**: when a user searches for a game that isn't in the local database yet, it is fetched from RAWG (with its Metacritic score, cover, genres and platforms) and stored locally — the API is never called twice for the same game; every search afterwards hits the database only. Per-game details (description/developer) are also fetched lazily, at most once per game, when its page is first opened. A small initial list of top-rated games is seeded on first boot. Without a key, the built-in 24-game demo catalog is used and the site runs fully offline.
-- **Steam key** (<https://steamcommunity.com/dev>): enables real achievement/library sync via the Steam Web API; without it, the sync button runs in simulated mode (30–90% unlock).
+- **Steam key** (<https://steamcommunity.com/dev>): enables a full profile sync via the Steam Web API — owned games are imported to the user's library with playtime and status (Playing if played in the last two weeks, Played otherwise, Backlog if never played), achievements are upserted once per game (top 15 by playtime per sync), and user-set ratings/reviews are preserved. Without it, the sync button runs in simulated mode (30–90% unlock).
 
 ## Project structure
 

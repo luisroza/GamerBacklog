@@ -7,6 +7,9 @@ obj/
 *.db-shm
 *.db-wal
 
+# Local secrets (real API keys live here, not in the committed appsettings.json)
+appsettings.Development.json
+
 # IDE / user files
 .vs/
 .idea/

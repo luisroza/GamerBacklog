@@ -1,0 +1,33 @@
+@model GamerBacklog.Domain.Entities.Game
+@{
+    ViewData["Title"] = "Admin — Delete game";
+    var libraryCount = (int)(ViewBag.LibraryCount ?? 0);
+    var achievementCount = (int)(ViewBag.AchievementCount ?? 0);
+    var source = Model.RawgId != null ? "RAWG" : Model.SteamAppId != null ? "Steam" : "Demo";
+}
+
+<div class="max-w-xl mx-auto">
+    <div class="card p-6 border-[#F87171]/40">
+        <h1 class="font-display text-2xl font-extrabold text-[#F87171]">Delete game</h1>
+
+        <div class="mt-4 flex gap-4 items-center">
+            <img src="@(Model.ImageUrl ?? Model.CoverUrl)" alt="" class="w-16 h-24 object-cover rounded border border-edge" onerror="this.onerror=null;this.src='@Model.CoverUrl'" />
+            <div>
+                <div class="font-display text-lg font-bold">@Model.Name</div>
+                <div class="text-sm text-dim">@Model.Developer@(Model.ReleaseYear != null ? " · " + Model.ReleaseYear : "")</div>
+                <span class="pill mt-1 inline-block">@source</span>
+            </div>
+        </div>
+
+        <div class="mt-4 rounded-xl bg-[#23272F] border border-edge p-4 text-sm space-y-1">
+            <div>⚠️ This game is in <span class="text-[#FBBF24] font-bold">@libraryCount</span> user librar@(libraryCount == 1 ? "y" : "ies").</div>
+            <div>⚠️ <span class="text-[#FBBF24] font-bold">@achievementCount</span> achievement@(achievementCount == 1 ? "" : "s") will be deleted.</div>
+            <div class="text-dim pt-1">Ratings, reviews and library entries from those users are removed too (cascade). This action is irreversible.</div>
+        </div>
+
+        <form method="post" asp-action="DeleteConfirmed" asp-route-id="@Model.Id" class="mt-5 flex gap-2 justify-end">
+            <a asp-action="Index" class="btn-outline">Cancel</a>
+            <button type="submit" class="rounded-lg px-4 h-10 text-sm font-semibold bg-[#EF4444] text-white hover:bg-[#F87171]">Delete permanently</button>
+        </form>
+    </div>
+</div>

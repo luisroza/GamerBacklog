@@ -11,6 +11,8 @@ public static class DbSeeder
     public static async Task SeedAsync(AppDbContext db, IServiceProvider services)
     {
         var userManager = services.GetRequiredService<UserManager<ApplicationUser>>();
+        var roleManager = services.GetRequiredService<RoleManager<IdentityRole>>();
+        var config = services.GetRequiredService<IConfiguration>();
         var catalog = services.GetRequiredService<ICatalogClient>();
 
         // 1) Games (RAWG when configured; built-in demo catalog otherwise, and as fallback on failure)
@@ -109,6 +111,37 @@ public static class DbSeeder
             "Demo", "Weekend gamer. RPGs and roguelikes are my vice — and the backlog keeps growing.");
         var ana = await EnsureUserAsync(userManager, "ana", "ana@gamerbacklog.dev", "Demo123!",
             "Ana Souza", "JRPG and indie fan. Platinum hunter in my spare time.");
+
+        // 3b) Hidden admin panel account (role-gated /admin_panel; override via "Admin" config section)
+        const string adminRole = "Admin";
+        if (!await roleManager.RoleExistsAsync(adminRole))
+        {
+            await roleManager.CreateAsync(new IdentityRole(adminRole));
+        }
+
+        var adminUsername = config["Admin:Username"] ?? "admin";
+        var admin = await userManager.FindByNameAsync(adminUsername);
+        if (admin == null)
+        {
+            admin = new ApplicationUser
+            {
+                UserName = adminUsername,
+                Email = $"{adminUsername}@gamerbacklog.dev",
+                DisplayName = "Admin",
+                EmailConfirmed = true
+            };
+            var adminPassword = config["Admin:Password"] ?? "GbAdmin!2026";
+            var adminResult = await userManager.CreateAsync(admin, adminPassword);
+            if (!adminResult.Succeeded)
+            {
+                throw new InvalidOperationException("Failed to create admin user: " +
+                    string.Join("; ", adminResult.Errors.Select(e => e.Description)));
+            }
+        }
+        if (!await userManager.IsInRoleAsync(admin, adminRole))
+        {
+            await userManager.AddToRoleAsync(admin, adminRole);
+        }
 
         // 4) Follows
         if (!await db.Follows.AnyAsync())
