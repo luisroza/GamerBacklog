@@ -1,32 +1,32 @@
 # GamerBacklog
 
-Catálogo social de jogos e biblioteca pessoal inspirado no Backloggd: organize jogos por status, avalie, escreva resenhas, siga pessoas e acompanhe atividades e conquistas.
+A social game catalog and personal library inspired by Backloggd: organize games by status, rate them, write reviews, follow people, and track activities and achievements.
 
-MVP em C#/.NET 10, ASP.NET Core MVC/Razor, Identity, EF Core e SQLite. Interface em inglês e documentação de desenvolvimento em português.
+An MVP built with C#/.NET 10, ASP.NET Core MVC/Razor, Identity, EF Core, and SQLite. The interface and this README are in English; the development guides are in Portuguese.
 
-## Estado atual do projeto
+## Current project status
 
-Revisão da documentação em **20/09/2026**, baseada no código local em `main`, commit `7cd3aa6`. O projeto está em **MVP para demonstração local**, com documentação de continuidade criada e pendências abertas antes de produção.
+Documentation reviewed on **September 20, 2026**, against the local code on `main`, commit `7cd3aa6`. The project is an **MVP for local demonstration**, with development documentation in place and outstanding work before production use.
 
-| Área | Estado |
+| Area | Status |
 |---|---|
-| Aplicação local | Build, inicialização do SQLite e fluxos básicos verificados em 10/09/2026 |
-| Testes | Smoke passou com correção de textos somente em memória; o script versionado ainda procura rótulos em português na interface inglesa |
-| RAWG | Cliente implementado, mas sem chave na configuração versionada; chamadas reais ainda não validadas |
-| Steam | Importação implementada e modo simulado disponível; fluxo real e possíveis problemas de vínculo/contrato ainda precisam de validação |
-| PSN e Xbox | Placeholders, sem sincronização funcional |
-| Documentação | Guias de produto, arquitetura, desenvolvimento, integrações, testes e operação disponíveis em `docs/` |
-| Implantação | Nenhuma publicação concluída nesta sessão; hospedagem de produção ainda não definida |
+| Local application | Build, SQLite initialization, and basic flows verified on September 10, 2026 |
+| Tests | The smoke test passed with text assertions adjusted only in memory; the versioned script still searches for Portuguese labels in the English interface |
+| RAWG | Client implemented, but no key in the versioned configuration; live API calls have not been validated |
+| Steam | Import code and simulated mode available; the live flow and potential relationship/API contract issues still need validation |
+| PSN and Xbox | Placeholders without functional synchronization |
+| Documentation | Product, architecture, development, integration, testing, and operations guides available in `docs/` |
+| Deployment | No deployment completed during this work; production hosting remains undecided |
 
-A validação local de 10/09 cobriu páginas públicas, login persistente, alteração de status, biblioteca, configurações, notificações, perfil e busca. Não comprova chamadas externas, CRUD administrativo, carga ou prontidão de produção. Os testes não foram reexecutados nesta revisão documental.
+Local validation on September 10 covered public pages, persistent login, status changes, the library, settings, notifications, profiles, and search. It does not establish that external API calls, administrative CRUD, load handling, or production readiness have been validated. Tests were not rerun for this documentation review.
 
-**Próximas prioridades:** corrigir o smoke test, separar contas/seed demo de produção, resolver o alerta de dependência SQLite registrado no build, permitir limpar avaliações e corrigir/validar a sincronização Steam, incluindo a simulação após falha real. Consulte [pendências e critérios de aceite](docs/PENDENCIAS.md) e [evidências de qualidade](docs/QUALIDADE.md).
+**Next priorities:** fix the smoke test, separate demo accounts and seed data from production, resolve the SQLite dependency warning reported during the build, support clearing ratings, and fix/validate Steam synchronization, including simulation triggered by a failed live sync. See [outstanding work and acceptance criteria](docs/PENDENCIAS.md) and [validation evidence](docs/QUALIDADE.md).
 
-A publicação no endereço Sites solicitado não foi realizada: a aplicação ASP.NET Core/SQLite atual não é diretamente compatível com o ambiente Sites verificado na análise de implantação. Não foi escolhida nem executada uma migração de arquitetura.
+Deployment to the requested Sites address was not performed: the current ASP.NET Core/SQLite application is not directly compatible with the Sites environment checked during the deployment assessment. No architecture migration has been selected or performed.
 
-## Executar
+## Run locally
 
-Na pasta que contém `GamerBacklog.csproj`, com SDK .NET 10 instalado:
+From the directory containing `GamerBacklog.csproj`, with the .NET 10 SDK installed:
 
 ```powershell
 dotnet restore
@@ -34,44 +34,44 @@ dotnet build
 dotnet run
 ```
 
-Abra [localhost:5099](http://localhost:5099). O perfil local usa Development. O boot aplica migrations e cria dados demo automaticamente.
+Open [localhost:5099](http://localhost:5099). The local launch profile uses Development. Startup automatically applies migrations and creates demo data.
 
-Conta demo: `demo@gamerbacklog.dev` / `Demo123!`. Há também `ana@gamerbacklog.dev` com a mesma senha. Use essas contas somente para demonstração local.
+Demo account: `demo@gamerbacklog.dev` / `Demo123!`. The account `ana@gamerbacklog.dev` uses the same password. Use these accounts only for local demonstrations.
 
-## Funcionalidades
+## Features
 
-- Cadastro, login, logout e perfis públicos em `/u/{username}`.
-- Catálogo com busca, filtros, paginação, detalhes e avaliações da comunidade.
-- Biblioteca: Want to Play, Playing, Played, Abandoned e Wishlist.
-- Notas de 1–5 estrelas, resenhas, seguidores, feed e notificações internas.
-- Importação RAWG sob demanda quando configurada.
-- Código de importação Steam de biblioteca, horas e conquistas, com modo simulado.
-- CRUD administrativo de jogos em `/admin_panel`, restrito ao papel Admin.
-- Capas e avatares SVG gerados por endpoints locais.
+- Registration, login, logout, and public profiles at `/u/{username}`.
+- Game catalog with search, filters, pagination, details, and community ratings.
+- Library statuses: Want to Play, Playing, Played, Abandoned, and Wishlist.
+- Ratings of 1–5 stars, reviews, followers, an activity feed, and internal notifications.
+- On-demand RAWG imports when configured.
+- Steam library, playtime, and achievement import code, with a simulated mode.
+- Administrative game CRUD at `/admin_panel`, restricted to the Admin role.
+- SVG covers and avatars generated by local endpoints.
 
-PSN e Xbox são placeholders. `DemoIgdbClient` contém 24 jogos locais; não consulta IGDB. A integração Steam real precisa de correções e validação, descritas nas pendências.
+PSN and Xbox are placeholders. `DemoIgdbClient` contains 24 local games and does not call IGDB. The live Steam integration needs fixes and validation, as described in the outstanding work.
 
-## Documentação
+## Documentation
 
-Comece por [AGENTS.md](AGENTS.md) e pelo [índice de continuidade](docs/README.md).
+Start with [AGENTS.md](AGENTS.md) and the [development documentation index](docs/README.md).
 
-| Documento | Conteúdo |
+| Document | Contents |
 |---|---|
-| [Estado atual](docs/ESTADO_ATUAL.md) | Histórico, evidências e ponto de retomada |
-| [Produto](docs/PRODUTO.md) | Funcionalidades, regras e lacunas |
-| [Arquitetura](docs/ARQUITETURA.md) | Componentes, fluxos e dados |
-| [Desenvolvimento](docs/DESENVOLVIMENTO.md) | Setup, configuração e migrations |
-| [Integrações](docs/INTEGRACOES.md) | RAWG, Steam e modos de falha |
-| [Rotas](docs/ROTAS.md) | Endpoints e autorização |
-| [Qualidade](docs/QUALIDADE.md) | Testes e critérios de validação |
-| [Pendências](docs/PENDENCIAS.md) | Priorização e critérios de aceite |
-| [Operação](docs/OPERACAO.md) | Diagnóstico, banco e preparação para produção |
-| [Decisões](docs/DECISOES.md) | Escolhas observadas e questões abertas |
+| [Current state](docs/ESTADO_ATUAL.md) | History, evidence, and where to resume |
+| [Product](docs/PRODUTO.md) | Features, rules, and gaps |
+| [Architecture](docs/ARQUITETURA.md) | Components, flows, and data |
+| [Development](docs/DESENVOLVIMENTO.md) | Setup, configuration, and migrations |
+| [Integrations](docs/INTEGRACOES.md) | RAWG, Steam, and failure modes |
+| [Routes](docs/ROTAS.md) | Endpoints and authorization |
+| [Quality](docs/QUALIDADE.md) | Tests and validation criteria |
+| [Outstanding work](docs/PENDENCIAS.md) | Priorities and acceptance criteria |
+| [Operations](docs/OPERACAO.md) | Diagnostics, database, and production preparation |
+| [Decisions](docs/DECISOES.md) | Observed choices and open questions |
 
-## Configuração opcional
+## Optional configuration
 
-As chaves `Rawg:ApiKey` e `Steam:ApiKey` estão vazias no arquivo versionado. Use variáveis de ambiente ou `appsettings.Development.json`, ignorado pelo Git; veja desenvolvimento.
+`Rawg:ApiKey` and `Steam:ApiKey` are empty in the versioned configuration file. Use environment variables or the Git-ignored `appsettings.Development.json`; see the development guide.
 
-Sem chaves, o backend usa catálogo demo e sincronização Steam simulada. Tailwind e fontes vêm de CDN, portanto o visual não é inteiramente independente de internet.
+Without keys, the backend uses the demo catalog and simulated Steam synchronization. Tailwind and fonts are loaded from CDNs, so the visual interface is not fully independent of an internet connection.
 
-Não há implantação de produção documentada ou automatizada neste repositório. O seed atual cria contas demo/admin também fora de Development; isso deve ser corrigido antes de publicar.
+This repository has no documented or automated production deployment. The current seed creates demo/admin accounts outside Development too; this must be addressed before publishing.
